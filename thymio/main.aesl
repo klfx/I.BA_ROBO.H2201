@@ -1,0 +1,113 @@
+<!DOCTYPE aesl-source>
+<network>
+
+
+<!--list of global events-->
+
+
+<!--node E-Puck 1 on DESKTOP-R30IM5B - 18596-->
+<node nodeId="{3ea7883d-0448-4816-bcaf-ad2aba8f896b}" name="E-Puck 1 on DESKTOP-R30IM5B - 18596"><![CDATA[#v1.4 24/10/2022
+
+var MAX_SPEED = 500
+var THRESHOLD = 2
+var STATUS = 0
+var timercount = 0
+var kreuzung_active = 0
+
+var offtrack_active = 0
+var offtrack_new = 0
+
+var amount_corrections = 0
+var amount_corrections_reset = 0
+
+timer.period[0]=500
+
+onevent button.forward
+	if button.forward == 1 then
+		if  STATUS==0 then
+				motor.left.target = MAX_SPEED
+				motor.right.target = MAX_SPEED
+				leds.top[2] = 32
+				STATUS=1
+		else
+				motor.left.target = 0
+				motor.right.target = 0
+				leds.top[2] = 0
+				STATUS=0
+		end
+
+	end
+
+onevent prox
+	if  offtrack_active == 0 then
+		call math.min(offtrack_new,prox.ground.delta[0],prox.ground.delta[1])
+		if  abs(prox.ground.delta[0]-prox.ground.delta[1]) > ((prox.ground.delta[0]+prox.ground.delta[1])/2 * THRESHOLD/10) and kreuzung_active == 0 then
+			if  prox.ground.delta[0]>prox.ground.delta[1] then
+				#LED ring right
+				leds.circle[2] = 32
+				leds.circle[6] = 0
+							
+			
+				motor.left.target = MAX_SPEED
+				motor.right.target = MAX_SPEED - 175
+
+							
+			amount_corrections += 1     
+			else
+				#LED ring left
+				leds.circle[6] = 32
+				leds.circle[2] = 0
+			
+				motor.left.target = MAX_SPEED - 175
+				motor.right.target = MAX_SPEED
+
+							
+				amount_corrections += 1
+			end
+				
+						
+		elseif (((prox.ground.delta[0]+prox.ground.delta[1])/2) < 100) and kreuzung_active == 0 then
+			#kreuzung
+			timercount=0
+			kreuzung_active=1
+			motor.left.target = MAX_SPEED
+			motor.right.target = MAX_SPEED
+			leds.top[1] = 32
+				
+							
+		elseif kreuzung_active==1 and timercount>=20 then
+			kreuzung_active=0
+			leds.top[1] = 0
+				
+		#offtrack
+		elseif offtrack_new  > 870 then
+			offtrack_active = 1
+			leds.top[2] = 32
+			
+		else
+			#drive straight
+			motor.left.target = MAX_SPEED
+			motor.right.target = MAX_SPEED
+			leds.circle[6] = 32
+			leds.circle[2] = 32
+		end
+	else
+		motor.left.target = 0
+		motor.right.target = 0
+	end
+	
+onevent timer0
+	timercount+=5
+	amount_corrections_reset+=5
+	
+	#Speed Control MAX Speed
+	if amount_corrections_reset > 10 then
+		MAX_SPEED = abs(-15 * 2 * amount_corrections + 530)
+		amount_corrections_reset = 0
+		amount_corrections = 0
+	end
+		
+]]></node>
+
+
+</network>
