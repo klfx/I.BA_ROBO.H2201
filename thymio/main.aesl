@@ -5,35 +5,34 @@
 <!--list of global events-->
 
 
-<!--node E-Puck 1 on DESKTOP-R30IM5B - 18596-->
-<node nodeId="{3ea7883d-0448-4816-bcaf-ad2aba8f896b}" name="E-Puck 1 on DESKTOP-R30IM5B - 18596"><![CDATA[#v1.4 24/10/2022
+<!--node USB Serial Device-->
+<node name="USB Serial Device" nodeId="{f9a8ab75-bcc5-42dc-8fee-9c84d9c510fd}"><![CDATA[#I.BA_ROBO.H2201
+#v1.5 25/10/2022
 
+
+#Runtime Parameters (Feel free to change)
+var STOP_IF_OFFTRACK = 0
 var MAX_SPEED = 500
 var THRESHOLD = 2
-var STATUS = 0
+
+#Internal Variables
+var status = 0
 var timercount = 0
 var kreuzung_active = 0
-
 var offtrack_active = 0
 var offtrack_new = 0
-
 var amount_corrections = 0
 var amount_corrections_reset = 0
-
 timer.period[0]=500
 
 onevent button.forward
 	if button.forward == 1 then
-		if  STATUS==0 then
-				motor.left.target = MAX_SPEED
-				motor.right.target = MAX_SPEED
-				leds.top[2] = 32
-				STATUS=1
+		if  status ==0 then
+				offtrack_active = 1
+				status=1
 		else
-				motor.left.target = 0
-				motor.right.target = 0
-				leds.top[2] = 0
-				STATUS=0
+				offtrack_active = 0
+				status=0
 		end
 
 	end
@@ -46,7 +45,6 @@ onevent prox
 				#LED ring right
 				leds.circle[2] = 32
 				leds.circle[6] = 0
-							
 			
 				motor.left.target = MAX_SPEED
 				motor.right.target = MAX_SPEED - 175
@@ -80,7 +78,7 @@ onevent prox
 			leds.top[1] = 0
 				
 		#offtrack
-		elseif offtrack_new  > 870 then
+		elseif offtrack_new  > 870 and STOP_IF_OFFTRACK == 1 then
 			offtrack_active = 1
 			leds.top[2] = 32
 			
