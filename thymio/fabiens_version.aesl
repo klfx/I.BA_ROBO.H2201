@@ -1,0 +1,107 @@
+<!DOCTYPE aesl-source>
+<network>
+
+
+<!--list of global events-->
+
+
+<!--node Thymio-II Wireless-->
+<node nodeId="{b1d20804-01df-42db-8cac-78b841b10ffe}" name="Thymio-II Wireless"><![CDATA[var darkest_reflection = 0
+var arrived_at_destination = 0
+var visited_line = 0
+var max_speed = 0
+var max_queue_length = 5
+var queue_count = 0
+var Queue[2 + (1*6)]
+var Sum = 0
+var poped_value = 0
+var average = 0
+var correction = 0
+var initial_entry = 0
+var direction = 0
+var sensor_diffrence = 0
+var test = 0
+
+sub terminate
+	motor.left.target = 0
+	motor.right.target = 0
+	arrived_at_destination = 1
+
+onevent button.center
+	if button.center == 1 then
+		callsub terminate
+	end
+	
+	
+onevent prox
+	call math.min(darkest_reflection,  prox.ground.delta[0],  prox.ground.delta[1])
+	if  arrived_at_destination == 1 then
+		callsub terminate
+	else
+	
+		#call deque.size(Queue,  queue_count)
+		
+		if darkest_reflection >= 750 then	
+			if  visited_line == 1 then
+			
+				#*if queue_count < max_queue_length then
+					call deque.push_front(Queue, 1)
+					Sum += 1
+				else
+					call deque.pop_back(Queue,  poped_value)
+					call deque.push_front(Queue, 1)
+					Sum -= poped_value
+					Sum += 1
+					average = Sum / queue_count
+					
+					if  average == 1 then
+		*#
+						callsub terminate
+			#		end
+			#	end
+			else
+				motor.left.target = 300
+				motor.right.target = 300
+			end
+		else 
+			visited_line = 1
+			#*if  initial_entry < 5 then
+				initial_entry += 1
+				if  prox.ground.delta[0] >= prox.ground.delta[1]  then
+					max_speed = darkest_reflection * 5
+					correction = (prox.ground.delta[0] - prox.ground.delta[1])
+					motor.left.target = max_speed
+					motor.right.target = max_speed - correction
+				else
+					max_speed = darkest_reflection * 5
+					correction = (prox.ground.delta[1] - prox.ground.delta[0])
+					motor.right.target = max_speed 
+					motor.left.target = max_speed - correction
+				end	
+			end
+			*#
+			#*if queue_count < max_queue_length then
+				call deque.push_front(Queue, 0)
+			else
+				call deque.pop_back(Queue,  poped_value)
+				call deque.push_front(Queue, 0)
+			end
+			*#
+			if  prox.ground.delta[0] >= prox.ground.delta[1]  then
+				max_speed = darkest_reflection * 5
+				sensor_diffrence = (prox.ground.delta[0] - prox.ground.delta[1])
+				correction = sensor_diffrence / 3 #/ (1 - ((sensor_diffrence *  1000) / ((sensor_diffrence * 1000) + (500 * 1000))))
+				motor.left.target = max_speed
+				motor.right.target = max_speed - correction
+			else
+				max_speed = darkest_reflection * 5
+				sensor_diffrence = (prox.ground.delta[1] - prox.ground.delta[0]) 
+				correction = sensor_diffrence / 3  #/ (1 - ((sensor_diffrence *  1000) / ((sensor_diffrence * 1000) + (500 * 1000))))
+				motor.right.target = max_speed
+				motor.left.target = max_speed - correction
+			end
+		end
+	end]]></node>
+
+
+</network>
