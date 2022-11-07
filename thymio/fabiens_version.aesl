@@ -19,7 +19,7 @@ var average = 0
 var correction = 0
 var initial_entry = 0
 var direction = 0
-var sensor_diffrence = 0
+var sensor_difference = 0
 var test = 0
 
 sub terminate
@@ -89,14 +89,14 @@ onevent prox
 			*#
 			if  prox.ground.delta[0] >= prox.ground.delta[1]  then
 				max_speed = darkest_reflection * 5
-				sensor_diffrence = (prox.ground.delta[0] - prox.ground.delta[1])
-				correction = sensor_diffrence / 3 #/ (1 - ((sensor_diffrence *  1000) / ((sensor_diffrence * 1000) + (500 * 1000))))
+				sensor_difference = (prox.ground.delta[0] - prox.ground.delta[1])
+				correction = sensor_difference / 3 #/ (1 - ((sensor_difference *  1000) / ((sensor_difference * 1000) + (500 * 1000))))
 				motor.left.target = max_speed
 				motor.right.target = max_speed - correction
 			else
 				max_speed = darkest_reflection * 5
-				sensor_diffrence = (prox.ground.delta[1] - prox.ground.delta[0]) 
-				correction = sensor_diffrence / 3  #/ (1 - ((sensor_diffrence *  1000) / ((sensor_diffrence * 1000) + (500 * 1000))))
+				sensor_difference = (prox.ground.delta[1] - prox.ground.delta[0]) 
+				correction = sensor_difference / 3  #/ (1 - ((sensor_difference *  1000) / ((sensor_difference * 1000) + (500 * 1000))))
 				motor.right.target = max_speed
 				motor.left.target = max_speed - correction
 			end
