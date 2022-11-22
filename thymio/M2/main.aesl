@@ -6,12 +6,11 @@
 
 
 <!--node USB Serial Device-->
-<node name="USB Serial Device" nodeId="{f9a8ab75-bcc5-42dc-8fee-9c84d9c510fd}"><![CDATA[#I.BA_ROBO.H2201
+<node name="USB Serial Device" nodeId="{b1d20804-01df-42db-8cac-78b841b10ffe}"><![CDATA[#I.BA_ROBO.H2201
 #v1.5 25/10/2022
 
 
 #Runtime Parameters (Feel free to change)
-var STOP_IF_OFFTRACK = 0
 var MAX_SPEED = 500
 var THRESHOLD = 2
 
@@ -23,6 +22,7 @@ var offtrack_active = 0
 var offtrack_new = 0
 var amount_corrections = 0
 var amount_corrections_reset = 0
+var offtrack_armed = 0
 timer.period[0]=500
 
 onevent button.forward
@@ -77,8 +77,8 @@ onevent prox
 			kreuzung_active=0
 			leds.top[1] = 0
 				
-		#offtrack
-		elseif offtrack_new  > 870 and STOP_IF_OFFTRACK == 1 then
+			#offtrack
+		elseif offtrack_new > 870 and offtrack_armed == 1 then
 			offtrack_active = 1
 			leds.top[2] = 32
 			
@@ -99,11 +99,19 @@ onevent timer0
 	amount_corrections_reset+=5
 	
 	#Speed Control MAX Speed
+	#Offtrack Control
 	if amount_corrections_reset > 10 then
 		MAX_SPEED = abs(-15 * 2 * amount_corrections + 530)
+		
+		#arm offtrack when thymio enters slope
+		if amount_corrections > 5 then
+			offtrack_armed = 1
+		end
+		
 		amount_corrections_reset = 0
 		amount_corrections = 0
 	end
+	
 		
 ]]></node>
 

@@ -1,0 +1,96 @@
+<!DOCTYPE aesl-source>
+<network>
+
+
+<!--list of global events-->
+
+
+<!--node USB Serial Device-->
+<node name="USB Serial Device" nodeId="{72309c7e-6f2a-4d89-a4e9-78e751c550c8}"><![CDATA[#tsk5 haus vom nikolaus
+var currentstate = 0
+timer.period[0] = 3000
+timer.period[1] = 1500
+
+
+onevent timer0
+	currentstate += 1
+	if currentstate == 1 then
+		callsub longline
+	elseif currentstate == 2 then
+		callsub turnleft
+	elseif currentstate == 3 then
+		callsub longline
+	elseif currentstate == 4 then
+		callsub turnleft
+	elseif currentstate == 5 then
+		callsub longline
+	elseif currentstate == 6 then
+		callsub turnright
+	elseif currentstate == 9 then
+		callsub turnright
+	elseif currentstate == 11 then
+		callsub turnright
+	elseif currentstate == 12 then
+		callsub turnright_45
+	elseif currentstate == 13 then
+		callsub longline
+	end
+
+onevent timer1
+	if currentstate == 7 then
+		callsub turnright_45
+	elseif  currentstate == 8 then
+		callsub longline
+	elseif currentstate == 10 then
+		callsub longline
+	end
+
+
+	
+sub longline
+	motor.left.target =200
+	motor.right.target =200
+	leds.top[1] = 32
+	call sound.system(0)
+	
+sub longline_stop
+	motor.left.target = 0
+	motor.right.target = 0
+	leds.top[1] = 0
+	call sound.system(1)
+	
+sub turnleft
+	motor.left.target = -75
+	motor.right.target = 75
+	leds.top[0] = 32
+	leds.top[1] = 0
+	call sound.system(2)
+	
+sub turnleft_45
+	motor.left.target = 0
+	motor.right.target = 50
+	leds.top[0] = 32
+	leds.top[1] = 0
+	call sound.system(2)
+
+sub turnright
+	motor.left.target = 75
+	motor.right.target = -75
+	leds.top[0] = 32
+	leds.top[1] = 0
+	call sound.system(2)
+	
+sub turnright_45
+	motor.left.target = 37
+	motor.right.target = -37
+	leds.top[0] = 32
+	leds.top[1] = 0
+	call sound.system(2)
+	
+onevent button.forward
+if button.forward == 1 then
+	call sound.system(5)
+end]]></node>
+
+
+</network>

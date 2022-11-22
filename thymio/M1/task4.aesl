@@ -1,0 +1,16 @@
+<!DOCTYPE aesl-source>
+<network>
+
+
+<!--list of global events-->
+
+
+<!--node USB Serial Device-->
+<node name="USB Serial Device" nodeId="{72309c7e-6f2a-4d89-a4e9-78e751c550c8}"><![CDATA[onevent rc5
+if rc5.command == 10 then
+	
+end
+	]]></node>
+
+
+</network>
