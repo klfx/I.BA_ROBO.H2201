@@ -6,54 +6,102 @@
 
 
 <!--node USB Serial Device-->
-<node name="USB Serial Device" nodeId="{72309c7e-6f2a-4d89-a4e9-78e751c550c8}"><![CDATA[#tsk5 haus vom nikolaus
+<node nodeId="{72309c7e-6f2a-4d89-a4e9-78e751c550c8}" name="USB Serial Device"><![CDATA[#tsk5 haus vom nikolaus
 var currentstate = 0
 timer.period[0] = 3000
-timer.period[1] = 1500
 
 
 onevent timer0
 	currentstate += 1
 	if currentstate == 1 then
-		callsub longline
+		callsub straight
 	elseif currentstate == 2 then
 		callsub turnleft
 	elseif currentstate == 3 then
-		callsub longline
+		callsub straight
 	elseif currentstate == 4 then
 		callsub turnleft
 	elseif currentstate == 5 then
-		callsub longline
+		callsub straight
 	elseif currentstate == 6 then
 		callsub turnright
-	elseif currentstate == 9 then
-		callsub turnright
-	elseif currentstate == 11 then
-		callsub turnright
-	elseif currentstate == 12 then
-		callsub turnright_45
-	elseif currentstate == 13 then
-		callsub longline
-	end
-
-onevent timer1
-	if currentstate == 7 then
+	elseif currentstate == 7 then
 		callsub turnright_45
 	elseif  currentstate == 8 then
-		callsub longline
+		callsub diag_half
+	elseif currentstate == 9 then
+		callsub turnright
 	elseif currentstate == 10 then
-		callsub longline
+		callsub diag_half
+	elseif currentstate == 11 then
+		callsub turnright_corr
+	elseif currentstate == 12 then
+		callsub diag
+	elseif currentstate == 13 then
+		callsub turnright
+	elseif currentstate == 14 then
+		callsub turnright_45
+	elseif currentstate == 15 then
+		callsub straight
+	elseif currentstate == 16 then
+		callsub turnright
+	elseif currentstate == 17 then
+		callsub turnright_45
+	elseif currentstate == 18 then
+		callsub diag
+	elseif currentstate == 19 then
+		callsub stop
 	end
 
-
-	
-sub longline
-	motor.left.target =200
-	motor.right.target =200
-	leds.top[1] = 32
+sub diag
+	motor.left.target =290
+	motor.right.target =290
+	leds.top[0] = 0
+	leds.top[1] = 0
+	leds.top[2] = 32
 	call sound.system(0)
 	
-sub longline_stop
+sub diag_half
+	motor.left.target =145
+	motor.right.target =145
+	leds.top[0] = 0
+	leds.top[1] = 0
+	leds.top[2] = 32
+	call sound.system(0)
+	
+sub straight
+	motor.left.target =200
+	motor.right.target =200
+	leds.top[0] = 0
+	leds.top[1] = 32
+	leds.top[2] = 0
+	call sound.system(0)
+
+sub turnright
+	motor.left.target = 75
+	motor.right.target = -75
+	leds.top[0] = 32
+	leds.top[1] = 0
+	leds.top[2] = 0
+	call sound.system(2)
+	
+sub turnright_45
+	motor.left.target = 28
+	motor.right.target = -28
+	leds.top[0] = 32
+	leds.top[1] = 0
+	leds.top[2] = 0
+	call sound.system(2)
+	
+sub turnright_corr
+	motor.left.target = 69
+	motor.right.target = -69
+	leds.top[0] = 32
+	leds.top[1] = 0
+	leds.top[2] = 0
+	call sound.system(2)	
+
+sub stop
 	motor.left.target = 0
 	motor.right.target = 0
 	leds.top[1] = 0
@@ -66,27 +114,14 @@ sub turnleft
 	leds.top[1] = 0
 	call sound.system(2)
 	
+
 sub turnleft_45
-	motor.left.target = 0
-	motor.right.target = 50
+	motor.left.target = -28
+	motor.right.target = 28
 	leds.top[0] = 32
 	leds.top[1] = 0
 	call sound.system(2)
 
-sub turnright
-	motor.left.target = 75
-	motor.right.target = -75
-	leds.top[0] = 32
-	leds.top[1] = 0
-	call sound.system(2)
-	
-sub turnright_45
-	motor.left.target = 37
-	motor.right.target = -37
-	leds.top[0] = 32
-	leds.top[1] = 0
-	call sound.system(2)
-	
 onevent button.forward
 if button.forward == 1 then
 	call sound.system(5)
