@@ -1,0 +1,56 @@
+<!DOCTYPE aesl-source>
+<network>
+
+
+<!--list of global events-->
+
+
+<!--node USB Serial Device-->
+<node name="USB Serial Device" nodeId="{72309c7e-6f2a-4d89-a4e9-78e751c550c8}"><![CDATA[#task2: extension task 7
+#klf extension
+
+#*
+var UMFANG=1000
+var state = 0
+var m_left = 40*(UMFANG-283)/94
+m_left = 150
+*#
+var state = 0
+
+#insert values from python
+var m_left = 1000
+timer.period[0] = 700
+
+onevent timer0
+	state += 1
+	if  state == 1 then
+		callsub c_first
+	elseif  state == 2 then
+		callsub c_second	
+	elseif state >= 3 then
+		callsub reset
+	end
+
+sub c_first
+		leds.top[0] = 32
+		leds.top[1] = 0
+		leds.top[2] = 0
+		motor.left.target = -400
+		motor.right.target = m_left
+		
+sub c_second
+		motor.left.target = m_left
+		motor.right.target = -400
+		leds.top[0] = 0
+		leds.top[1] = 32
+		leds.top[2] = 0
+		
+sub reset
+		motor.left.target = 0
+		motor.right.target = 0
+		leds.top[0] = 0
+		leds.top[1] = 0
+		leds.top[2] = 0]]></node>
+
+
+</network>
