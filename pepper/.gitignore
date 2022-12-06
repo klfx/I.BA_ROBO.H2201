@@ -1,3 +1,5 @@
 libs/*
 H1/.idea/
 H1/pepper_robots.pyc
+H1/naoqi_python_wrapper
+H1/pepper_robots.py
