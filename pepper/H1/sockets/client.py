@@ -26,9 +26,9 @@ pepper.ALAutonomousLife.setState("solitary")
 pepper.ALRobotPosture.goToPosture("StandZero", 1.0)
 tts.setLanguage("English")
 tts.setVolume(0.6)
-tts.say("Let's play a game of I spy with my little eye")
+#tts.say("Let's play a game of I spy with my little eye")
 
-tts.say("I'l start")
+#tts.say("I'l start")
 #pepper.ALMotion.moveTo(-0.5, 0, 0)
 pepper_spies(pepper)
 
@@ -44,17 +44,28 @@ data = data.strip('][').split(', ')
 itemlist = []
 for i in data:
     i = i.replace("'", "")
-    pepper.ALTextToSpeech.say(i)
+    #pepper.ALTextToSpeech.say(i)
     itemlist.append(i)
 
 selecteditem = random.choice(itemlist)
 
-#sp = SpeechRecognition(pepper,itemlist,speech_callback)
+#overwrite with mock data
+itemlist = ['person', 'indoor', 'laptop', 'computer']
+selecteditem = 'computer'
 
-#for i in itemlist:
-    #print(i)
-    #tts.say(i)
-    #time.sleep(1)
+def speech_callback(value):
+    #tts.say(selecteditem)
+    print("recognized the following word:" + value[0] + " with accuracy: " + str(value[1]))
+    if value[0] == "person":
+        if value[1] > 0.35:
+            print "received person"
+    if value[0] == "indoor":
+        if value[1] > 0.35:
+            print "received indoor"
 
-#print(repr(data))
-#print(data)
+tts.say("Try to guess what i have spotted in the room")
+print('calling SpeechRecognition with itemlist:'+str(itemlist))
+sr = SpeechRecognition(pepper, itemlist, speech_callback)
+time.sleep(100)
+sr.unsubscribe()
+

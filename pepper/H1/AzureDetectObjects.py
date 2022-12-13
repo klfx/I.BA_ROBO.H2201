@@ -23,7 +23,7 @@ analyze_url = endpoint + "vision/v3.1/analyze"
 # Set image_path to the local path of an image that you want to analyze.
 # Sample images are here, if needed:
 # https://github.com/Azure-Samples/cognitive-services-sample-data-files/tree/master/ComputerVision/Images
-image_path = "C:\work\my_picture.jpg"
+image_path = "C:\work\latest.jpg"
 
 # Read the image into a byte array
 image_data = open(image_path, "rb").read()
@@ -44,6 +44,7 @@ analysis = response.json()
 #print(description)
 
 print(analysis['description'])
+print(analysis)
 """image_caption = analysis["description"]["captions"][0]["text"].capitalize()
 
 # Display the image and overlay it with the caption.

@@ -47,7 +47,7 @@ def pepper_spies(robot):
     # take a picture
     robot.ALTextToSpeech.say("taking picture")
     remote_folder_path = "/home/nao/recordings/cameras/"
-    file_name = "my_picture.jpg"
+    file_name = "latest.jpg"
     camera.take_picture(remote_folder_path, file_name)
 
     # copy file to local path
