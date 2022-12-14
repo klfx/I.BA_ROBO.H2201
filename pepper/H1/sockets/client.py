@@ -6,10 +6,10 @@ import socket
 import sys
 import time
 import random
+
 from speech_recognition import SpeechRecognition
 
 from pepper_robots import PepperConfiguration, Robot, PepperNames
-from naoqi_python_wrapper.ALAutonomousLife import ALAutonomousLife
 from take_picture import pepper_spies
 
 config = PepperConfiguration(PepperNames.Amber)
@@ -29,15 +29,12 @@ tts.setVolume(0.6)
 tts.say("Let's play a game of I spy with my little eye")
 
 tts.say("I'l start")
-#pepper.ALMotion.moveTo(-0.5, 0, 0)
 pepper_spies(pepper)
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.connect((HOST, PORT))
 s.sendall(b'Picture taken')
 data = s.recv(1024)
-print('original data:'+data)
-#data = data.decode('utf-8')
 
 data = data.strip('][').split(', ')
 
@@ -48,29 +45,34 @@ for i in data:
     itemlist.append(i)
 
 selecteditem = random.choice(itemlist)
+print('###################################################')
+print('Spoiler: Pepper is spying for ', selecteditem)
+print('Regognized items: ', str(itemlist))
+print('###################################################')
 
 #overwrite with mock data
-itemlist = ['person', 'indoor', 'laptop', 'computer']
-selecteditem = 'computer'
+#itemlist = ['text', 'person', 'indoor', 'man', 'wall', 'computer', 'laptop', 'office', 'working']
+#selecteditem = 'computer'
 
-
-"""
+running = True
+threshold = 0.35
 def speech_callback(value):
-    #tts.say(selecteditem)
-    print("recognized the following word:" + value[0] + " with accuracy: " + str(value[1]))
-    if value[0] == "person":
-        if value[1] > 0.35:
-            print "received person"
-    if value[0] == "indoor":
-        if value[1] > 0.35:
-            print "received indoor"
-"""
-def speech_callback(value):
+    global running
     print("recognized the following word:" + value[0] + " with accuracy: " + str(value[1]))
 
-tts.say("Try to guess what i have spotted in the room")
-print('calling SpeechRecognition with itemlist:'+str(itemlist))
-sr = SpeechRecognition(pepper, itemlist, speech_callback)
-time.sleep(3)
-sr.unsubscribe()
+    if value[0] == selecteditem:
+        if value[1] > threshold:
+            print("Good guess!")
+            tts.say("Good guess!")
+            running = False
+
+    else:
+        print("Wrong guess. Try again")
+        tts.say("Wrong guess! Try again")
+
+while running:
+    tts.say("Try to guess what i have spotted in the room")
+    sr = SpeechRecognition(pepper, itemlist, speech_callback)
+    time.sleep(3)
+    sr.unsubscribe()
 
