@@ -12,7 +12,7 @@ from pepper_robots import PepperConfiguration, Robot, PepperNames
 from naoqi_python_wrapper.ALAutonomousLife import ALAutonomousLife
 from take_picture import pepper_spies
 
-config = PepperConfiguration(PepperNames.Ale)
+config = PepperConfiguration(PepperNames.Amber)
 pepper = Robot(config)
 
 HOST = '127.0.0.1'  # The server's hostname or IP address
@@ -26,9 +26,9 @@ pepper.ALAutonomousLife.setState("solitary")
 pepper.ALRobotPosture.goToPosture("StandZero", 1.0)
 tts.setLanguage("English")
 tts.setVolume(0.6)
-#tts.say("Let's play a game of I spy with my little eye")
+tts.say("Let's play a game of I spy with my little eye")
 
-#tts.say("I'l start")
+tts.say("I'l start")
 #pepper.ALMotion.moveTo(-0.5, 0, 0)
 pepper_spies(pepper)
 
@@ -53,6 +53,8 @@ selecteditem = random.choice(itemlist)
 itemlist = ['person', 'indoor', 'laptop', 'computer']
 selecteditem = 'computer'
 
+
+"""
 def speech_callback(value):
     #tts.say(selecteditem)
     print("recognized the following word:" + value[0] + " with accuracy: " + str(value[1]))
@@ -62,10 +64,13 @@ def speech_callback(value):
     if value[0] == "indoor":
         if value[1] > 0.35:
             print "received indoor"
+"""
+def speech_callback(value):
+    print("recognized the following word:" + value[0] + " with accuracy: " + str(value[1]))
 
 tts.say("Try to guess what i have spotted in the room")
 print('calling SpeechRecognition with itemlist:'+str(itemlist))
 sr = SpeechRecognition(pepper, itemlist, speech_callback)
-time.sleep(100)
+time.sleep(3)
 sr.unsubscribe()
 

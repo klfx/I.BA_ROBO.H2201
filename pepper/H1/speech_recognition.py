@@ -1,6 +1,6 @@
 class SpeechRecognition(object):
 
-    def __init__(self, robot, vocabulary, selecteditem, callback):
+    def __init__(self, robot, vocabulary, callback):
 
         memory = robot.session.service("ALMemory")
         self.subscriber = memory.subscriber("WordRecognized")
@@ -13,9 +13,22 @@ class SpeechRecognition(object):
         self.__speech_recognition.subscribe("SpeechDetection")
         print('Speech recognition engine started')
 
+    def subscribe(self, callback):
+        self.subscriber = self.__memory.subscriber("WordRecognized")
+        self.__subscription_id = self.subscriber.signal.connect(callback)
+        self.__speech_recognition.subscribe("SpeechDetection")
+        print('Speech recognition engine started')
 
     def unsubscribe(self):
         self.__speech_recognition.unsubscribe("SpeechDetection")
+        #self.subscriber.signal.disconnect(self.__subscription_id)
+        #self.subscriber = None
         print('Speech recognition engine stopped')
+
+    def pause(self):
+        self.__speech_recognition.pause(True)
+
+    def unpause(self):
+        self.__speech_recognition.pause(False)
 
 
